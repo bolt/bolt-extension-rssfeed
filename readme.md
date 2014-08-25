@@ -1,7 +1,7 @@
 RSS Feed
 ========
 
-Creates a sitewide and contenttype specific feeds for your Bolt site.
+Creates sitewide and/or contenttype specific feeds for your Bolt site.
 
 Depending on your set up in the extension's config.yml you can access RSS feeds
 either by sitewide or contenttype specific URLs
