@@ -27,12 +27,12 @@
 
 # Site RSS Example
 # ----------------
-#sitewide:
-#    enabled: true
-#    feed_records: 10
-#    feed_template: rss.twig
-#    content_length: 0
-#    content_types: [entries, pages]
+sitewide:
+    enabled: true
+    feed_records: 10
+    feed_template: rss.twig
+    content_length: 0
+    content_types: [entries, pages]
 
 # Contenttype specific RSS Examples
 # ---------------------------------
