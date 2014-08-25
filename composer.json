@@ -1,0 +1,36 @@
+{
+	"name" : "bolt/rssfeed",
+	"description" : "RSS feeds extension for Bolt",
+	"type" : "bolt-extension",
+	"keywords" : [
+		"RSS"
+	],
+	"require" : {
+		"bolt/bolt" : ">=2.0.0,<3.0.0"
+	},
+	"license" : "GPL",
+	"authors" : [{
+			"name" : "Patrick van Kouteren",
+			"email" : "info@wedesignit.nl"
+		}, {
+			"name" : "Gawain Lynch",
+			"email" : "gawain.lynch@gmail.com"
+		}
+	],
+	"autoload" : {
+		"files" : [
+			"init.php"
+		],
+		"psr-4" : {
+			"Bolt\\Extension\\Bolt\\RSSFeed\\" : [
+				"",
+				"src/"
+			]
+		}
+	},
+	"extra" : {
+		"branch-alias" : {
+			"dev-master" : "1.0.*"
+		}
+	}
+}
