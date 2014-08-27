@@ -10,7 +10,7 @@ namespace Bolt\Extension\Bolt\RSSFeed;
  */
 class Extension extends \Bolt\BaseExtension
 {
-    const NAME = 'rssfeed';
+    const NAME = 'RSSFeed';
 
     public function getName()
     {
