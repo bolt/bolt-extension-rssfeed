@@ -23,6 +23,19 @@ class Extension extends \Bolt\BaseExtension
         $this->setController();
     }
 
+    protected function getDefaultConfig()
+    {
+        return array(
+            'sitewide' => array(
+                'enabled' => true,
+                'feed_records' => 10,
+                'feed_template' => 'rss.twig',
+                'content_length' => 0,
+                'content_types' => array('pages')
+                )
+        );
+    }
+
     /**
      * Create controller and define routes
      */
