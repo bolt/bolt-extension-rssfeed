@@ -51,6 +51,25 @@ class Extension extends \Bolt\BaseExtension
         // Contenttype specific feed(s)
         $this->app->match('/{contenttypeslug}/rss/feed.{extension}', array($this->controller, 'feed'))
                     ->assert('extension', '(xml|rss)')
-                    ->assert('contenttypeslug', $this->app['storage']->getContentTypeAssert());
+                    ->assert('contenttypeslug', $this->getContentTypeAssert());
+    }
+
+    /**
+     * Get a value to use in 'assert() with the available contenttypes
+     *
+     * @param  bool   $includesingular
+     * @return string $contenttypes
+     */
+    private function getContentTypeAssert($includesingular = false)
+    {
+        $slugs = array();
+        foreach ($this->app['config']->get('contenttypes') as $type) {
+            $slugs[] = $type['slug'];
+            if ($includesingular) {
+                $slugs[] = $type['singular_slug'];
+            }
+        }
+
+        return implode("|", $slugs);
     }
 }
