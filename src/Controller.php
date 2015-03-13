@@ -2,9 +2,7 @@
 
 namespace Bolt\Extension\Bolt\RSSFeed;
 
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 /**
  * RSSFeed Controller
@@ -69,7 +67,7 @@ class Controller
 
         // Get our content
         if ($contenttypeslug == 'sitewide') {
-            foreach ($this->config[$contenttypeslug]['content_types'] as $types ) {
+            foreach ($this->config[$contenttypeslug]['content_types'] as $types) {
                 $contenttypes[] = $this->app['storage']->getContentType($types);
             }
         } else {
@@ -112,8 +110,8 @@ class Controller
         $this->app['twig.loader.filesystem']->addPath(dirname(__DIR__) . '/assets/');
 
         $body = $this->app['render']->render($template, array(
-            'records' => $content,
-            'content_length' => $contentLength,
+            'records'            => $content,
+            'content_length'     => $contentLength,
             $contenttype['slug'] => $content,
         ));
 

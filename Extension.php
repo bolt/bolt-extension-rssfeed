@@ -12,6 +12,9 @@ class Extension extends \Bolt\BaseExtension
 {
     const NAME = 'RSSFeed';
 
+    /**
+     * @return string
+     */
     public function getName()
     {
         return Extension::NAME;
@@ -23,15 +26,20 @@ class Extension extends \Bolt\BaseExtension
         $this->setController();
     }
 
+    /**
+     * Set default config
+     *
+     * @return array
+     */
     protected function getDefaultConfig()
     {
         return array(
             'sitewide' => array(
-                'enabled' => true,
-                'feed_records' => 10,
-                'feed_template' => 'rss.twig',
+                'enabled'        => true,
+                'feed_records'   => 10,
+                'feed_template'  => 'rss.twig',
                 'content_length' => 0,
-                'content_types' => array('pages')
+                'content_types'  => array('pages')
                 )
         );
     }
@@ -46,18 +54,19 @@ class Extension extends \Bolt\BaseExtension
 
         // Sitewide feed
         $this->app->match('/rss/feed.{extension}', array($this->controller, 'feed'))
-                    ->assert('extension', '(xml|rss)');
+            ->assert('extension', '(xml|rss)');
 
         // Contenttype specific feed(s)
         $this->app->match('/{contenttypeslug}/rss/feed.{extension}', array($this->controller, 'feed'))
-                    ->assert('extension', '(xml|rss)')
-                    ->assert('contenttypeslug', $this->getContentTypeAssert());
+            ->assert('extension', '(xml|rss)')
+            ->assert('contenttypeslug', $this->getContentTypeAssert());
     }
 
     /**
      * Get a value to use in 'assert() with the available contenttypes
      *
-     * @param  bool   $includesingular
+     * @param boolean $includesingular
+     *
      * @return string $contenttypes
      */
     private function getContentTypeAssert($includesingular = false)
@@ -70,6 +79,6 @@ class Extension extends \Bolt\BaseExtension
             }
         }
 
-        return implode("|", $slugs);
+        return implode('|', $slugs);
     }
 }
