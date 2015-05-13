@@ -2,6 +2,7 @@
 
 namespace Bolt\Extension\Bolt\RSSFeed;
 
+use Bolt\Application;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -12,17 +13,13 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class Controller
 {
-    /**
-     * @var Silex\Application
-     */
+    /** @var Silex\Application $app */
     private $app;
 
-    /**
-     * @var Extension config array
-     */
+    /** @var array $config Extension config  */
     private $config;
 
-    public function __construct(\Bolt\Application $app)
+    public function __construct(Application $app)
     {
         $this->app = $app;
         $this->config = $this->app['extensions.' . Extension::NAME]->config;
@@ -39,7 +36,6 @@ class Controller
 
         // Defaults for later
         $defaultFeedRecords = 5;
-        $defaultContentLength = 100;
         $defaultTemplate = 'rss.twig';
         $content = array();
         $contenttypes = array();
@@ -84,6 +80,7 @@ class Controller
         }
 
         // Now narrow our content array to $amount based on date
+        $tmp = array();
         foreach ($content as $slug => $recordid) {
             foreach ($recordid as $record) {
                 $key = strtotime($record->values['datepublish']) . $slug;
@@ -115,11 +112,12 @@ class Controller
             $contenttype['slug'] => $content,
         ));
 
-        return new Response($body, 200,
-            array(
-                'Content-Type'  => 'application/rss+xml; charset=utf-8',
-                'Cache-Control' => 's-maxage=3600, public',
-            )
-        );
+        $response = new Response($body, Response::HTTP_OK);
+        $response->setCharset('utf-8')
+            ->setPublic()
+            ->setSharedMaxAge(3600)
+            ->headers->set('Content-Type', 'application/rss+xml');
+
+        return $response;
     }
 }
