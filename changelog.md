@@ -1,5 +1,8 @@
 # Changelog for RSS Feed
 
+* 2.1.1 (2015-03-13)
+ Tidy response object creation
+
 * 2.1.0 (2015-03-13)
  * Small PHPDoc & code tidy
 
