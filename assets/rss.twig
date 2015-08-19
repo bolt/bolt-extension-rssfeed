@@ -29,9 +29,9 @@
 
                 <description>
                 {% if content_length == 0 %}
-                    {{ record|rss_safe('teaser, body')|raw }}
+                    {{ record|rss_safe('teaser, body') }}
                 {% else %}
-                    {{ record|rss_safe('teaser, body', content_length)|raw }}
+                    {{ record|rss_safe('teaser, body', content_length) }}
                 {% endif %}
                 </description>
 {% if record.image is not empty %}
