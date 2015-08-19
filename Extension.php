@@ -94,7 +94,7 @@ class Extension extends \Bolt\BaseExtension
      * Note: To conform to the template style, this method name is not following PSR-1:
      *    {{ record.rss_safe() }}
      *
-     * @param \Bolt\Content  $record Bolt   Content object
+     * @param \Bolt\Content  $record        Bolt Content object
      * @param string         $fields        Comma separated list of fields to clean up
      * @param integer        $excerptLength Number of chars of the excerpt
      *
