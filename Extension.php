@@ -127,7 +127,7 @@ class Extension extends \Bolt\BaseExtension
             $result .= Html::trimText($result, $excerptLength);
         }
 
-        return '<![CDATA[ ' . $result . ' ]]>';
+        return new \Twig_Markup('<![CDATA[ ' . $result . ' ]]>', 'utf-8');
     }
 
 }
