@@ -1,4 +1,4 @@
-RSS Feed publisher
+RSS feed publisher
 ==================
 
 Creates sitewide and/or contenttype specific feeds for your Bolt website.
