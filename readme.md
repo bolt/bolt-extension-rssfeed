@@ -18,5 +18,5 @@ Where:
   - `{contenttypeslug}` is the slug of your contenttype.
   - `{extension}` is either 'xml' or 'rss'.
 
-See the comments in `config.yml` for more details.
+See the comments in your `rssfeed.bolt.yml` for more details.
 
