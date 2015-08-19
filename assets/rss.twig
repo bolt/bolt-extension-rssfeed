@@ -29,15 +29,15 @@
 
                 <description>
                 {% if content_length == 0 %}
-                    {{ record.rss_safe('teaser, body')|raw }}
+                    {{ record|rss_safe('teaser, body')|raw }}
                 {% else %}
-                    {{ record.rss_safe('teaser, body', content_length)|raw }}
+                    {{ record|rss_safe('teaser, body', content_length)|raw }}
                 {% endif %}
                 </description>
 {% if record.image is not empty %}
                 <image>{{ paths.hosturl }}{{ thumbnail(record.image, 600, 400) }}</image>
                 <enclosure url="{{ paths.hosturl }}{{ thumbnail(record.image, 600, 400) }}" type="image/jpeg" />
-{% endif %}                
+{% endif %}
             </item>
 
 {% endfor %}
