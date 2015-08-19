@@ -15,8 +15,8 @@ sitewide or contenttype specific URLs:
 `/{contenttypeslug}/rss/feed.{extension}`
 
 Where:
-  - `{contenttypeslug}`` is the slug of your contenttype
-  - `{extension}`` is either 'xml' or 'rss'
+  - `{contenttypeslug}` is the slug of your contenttype.
+  - `{extension}` is either 'xml' or 'rss'.
 
 See the comments in `config.yml` for more details.
 
