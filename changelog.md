@@ -1,5 +1,8 @@
 # Changelog for RSS Feed
 
+* 2.2.2 (2015-09-09)
+ * The koala did it…
+
 * 2.2.1 (2015-09-08)
  * Don't show "Warning:" when one of the contenttypes is empty. (credit @bobdenotter)
 
