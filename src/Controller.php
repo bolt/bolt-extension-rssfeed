@@ -82,9 +82,11 @@ class Controller
         // Now narrow our content array to $amount based on date
         $tmp = array();
         foreach ($content as $slug => $recordid) {
-            foreach ($recordid as $record) {
-                $key = strtotime($record->values['datepublish']) . $slug;
-                $tmp[$key] = $record;
+            if (!empty($recordid)) {
+                foreach ($recordid as $record) {
+                    $key = strtotime($record->values['datepublish']) . $slug;
+                    $tmp[$key] = $record;
+                }
             }
         }
 
