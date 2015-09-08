@@ -1,5 +1,8 @@
 # Changelog for RSS Feed
 
+* 2.2.1 (2015-09-08)
+ * Don't show "Warning:" when one of the contenttypes is empty. (credit @bobdenotter)
+
 * 2.2.0 (2015-08-19)
  * Migrate the old Bolt core rss_safe() function into the extension as it is to be removed from Bolt
 
