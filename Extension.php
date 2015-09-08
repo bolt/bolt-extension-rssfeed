@@ -2,6 +2,7 @@
 
 namespace Bolt\Extension\Bolt\RSSFeed;
 
+use Bolt\Helpers\Html;
 use Maid\Maid;
 
 /**
@@ -124,7 +125,7 @@ class Extension extends \Bolt\BaseExtension
         }
 
         if ($excerptLength > 0) {
-            $result .= Html::trimText($result, $excerptLength);
+            $result = Html::trimText($result, $excerptLength);
         }
 
         return new \Twig_Markup('<![CDATA[ ' . $result . ' ]]>', 'utf-8');
