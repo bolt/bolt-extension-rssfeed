@@ -7,7 +7,7 @@
 {% if app.config.get('general/payoff') is defined %}
         <description>{{ app.config.get('general/payoff') }}</description>
 {% endif %}
-        <language>en-us</language>
+        <language>{{ app.config.get('general/locale')|lower }}</language>
         <generator>Bolt</generator>
 
 {% for record in records %}
