@@ -1,5 +1,8 @@
 # Changelog for RSS Feed
 
+* 2.2.3 ()
+ * Use configured locale instead of hardcoded value (credit @doenietzomoeilijk)
+
 * 2.2.2 (2015-09-09)
  * The koala did it…
 
