@@ -11,7 +11,7 @@ use Maid\Maid;
  * @author Patrick van Kouteren <info@wedesignit.nl>
  * @author Gawain Lynch <gawain.lynch@gmail.com>
  */
-class Extension extends \Bolt\BaseExtension
+class RssFeedExtension extends \Bolt\BaseExtension
 {
     const NAME = 'RSSFeed';
 
