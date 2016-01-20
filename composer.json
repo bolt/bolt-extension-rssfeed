@@ -1,31 +1,35 @@
 {
-	"name" : "bolt/rssfeed",
-	"description" : "RSS feeds extension for Bolt",
-	"type" : "bolt-extension",
-	"keywords" : [
-		"RSS"
-	],
-	"require" : {
-		"bolt/bolt" : ">=2.0.0,<3.0.0"
-	},
-	"license" : "GPL-3.0+",
-	"authors" : [{
-			"name" : "Patrick van Kouteren",
-			"email" : "info@wedesignit.nl"
-		}, {
-			"name" : "Gawain Lynch",
-			"email" : "gawain.lynch@gmail.com"
-		}
-	],
-	"autoload" : {
-		"files" : [
-			"init.php"
-		],
-		"psr-4" : {
-			"Bolt\\Extension\\Bolt\\RSSFeed\\" : [
-				"",
-				"src/"
-			]
-		}
-	}
+    "name": "bolt/rssfeed",
+    "description": "RSS feeds extension for Bolt",
+    "type": "bolt-extension",
+    "keywords": [
+        "RSS"
+    ],
+    "require": {
+        "bolt/bolt": "^3.0"
+    },
+    "license": "GPL-3.0+",
+    "authors": [
+        {
+            "name": "Patrick van Kouteren",
+            "email": "info@wedesignit.nl"
+        },
+        {
+            "name": "Gawain Lynch",
+            "email": "gawain.lynch@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Bolt\\Extension\\Bolt\\RssFeed\\": [
+                "src/"
+            ]
+        }
+    },
+    "extra": {
+        "bolt-class": "Bolt\\Extension\\Bolt\\RssFeed\\RssFeedExtension",
+        "branch-alias": {
+            "dev-master": "3.0.x-dev"
+        }
+    }
 }
