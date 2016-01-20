@@ -1,8 +1,10 @@
 <?php
 
-namespace Bolt\Extension\Bolt\RSSFeed;
+namespace Bolt\Extension\Bolt\RssFeed;
 
+use Bolt\Extension\SimpleExtension;
 use Bolt\Helpers\Html;
+use Bolt\Legacy\Content;
 use Maid\Maid;
 
 /**
@@ -11,92 +13,51 @@ use Maid\Maid;
  * @author Patrick van Kouteren <info@wedesignit.nl>
  * @author Gawain Lynch <gawain.lynch@gmail.com>
  */
-class RssFeedExtension extends \Bolt\BaseExtension
+class RssFeedExtension extends SimpleExtension
 {
-    const NAME = 'RSSFeed';
-
     /**
-     * @return string
+     * {@inheritdoc}
      */
-    public function getName()
+    protected function registerFrontendControllers()
     {
-        return Extension::NAME;
-    }
-
-    public function initialize()
-    {
-        // Set up routes
-        $this->setController();
-
-        // Add Twig filter
-        $this->addTwigFilter('rss_safe', 'rssSafe');
+        return [
+            '/' => new RssFeedController($this->getContainer(), $this->getConfig()),
+        ];
     }
 
     /**
-     * Set default config
-     *
-     * @return array
+     * {@inheritdoc}
+     */
+    protected function registerTwigFilters()
+    {
+        return ['rss_safe' => 'rssSafe'];
+    }
+
+    /**
+     * {@inheritdoc}
      */
     protected function getDefaultConfig()
     {
-        return array(
-            'sitewide' => array(
+        return [
+            'sitewide' => [
                 'enabled'        => true,
                 'feed_records'   => 10,
                 'feed_template'  => 'rss.twig',
                 'content_length' => 0,
-                'content_types'  => array('pages')
-                )
-        );
-    }
-
-    /**
-     * Create controller and define routes
-     */
-    private function setController()
-    {
-        // Create controller object
-        $this->controller = new Controller($this->app);
-
-        // Sitewide feed
-        $this->app->match('/rss/feed.{extension}', array($this->controller, 'feed'))
-            ->assert('extension', '(xml|rss)');
-
-        // Contenttype specific feed(s)
-        $this->app->match('/{contenttypeslug}/rss/feed.{extension}', array($this->controller, 'feed'))
-            ->assert('extension', '(xml|rss)')
-            ->assert('contenttypeslug', $this->getContentTypeAssert());
-    }
-
-    /**
-     * Get a value to use in 'assert() with the available contenttypes
-     *
-     * @param boolean $includesingular
-     *
-     * @return string $contenttypes
-     */
-    private function getContentTypeAssert($includesingular = false)
-    {
-        $slugs = array();
-        foreach ($this->app['config']->get('contenttypes') as $type) {
-            $slugs[] = $type['slug'];
-            if ($includesingular) {
-                $slugs[] = $type['singular_slug'];
-            }
-        }
-
-        return implode('|', $slugs);
+                'content_types'  => ['pages'],
+                ],
+        ];
     }
 
     /**
      * Creates RSS safe content. Wraps it in CDATA tags, strips style and
      * scripts out. Can optionally also return a (cleaned) excerpt.
      *
-     * @param \Bolt\Content  $record        Bolt Content object
-     * @param string         $fields        Comma separated list of fields to clean up
-     * @param integer        $excerptLength Number of chars of the excerpt
+     * @param Content $record        Bolt Content object
+     * @param string  $fields        Comma separated list of fields to clean up
+     * @param integer $excerptLength Number of chars of the excerpt
      *
-     * @return string                       RSS safe string
+     * @return string RSS safe string
      */
     public function rssSafe($record, $fields = '', $excerptLength = 0)
     {
@@ -105,23 +66,21 @@ class RssFeedExtension extends \Bolt\BaseExtension
             $fields = explode(',', $fields);
         }
         $fields = array_map('trim', $fields);
-
         $result = '';
 
         foreach ($fields as $field) {
-            if (array_key_exists($field, $record->values)) {
-
-                // Completely remove style and script blocks
-                $maid = new Maid(
-                    array(
-                        'output-format'   => 'html',
-                        'allowed-tags'    => array('a', 'b', 'br', 'hr', 'h1', 'h2', 'h3', 'h4', 'p', 'strong', 'em', 'i', 'u', 'strike', 'ul', 'ol', 'li', 'img'),
-                        'allowed-attribs' => array('id', 'class', 'name', 'value', 'href', 'src')
-                    )
-                );
-
-                $result .= $maid->clean($record->values[$field]);
+            if (!array_key_exists($field, $record->values)) {
+                continue;
             }
+            // Completely remove style and script blocks
+            $maid = new Maid(
+                [
+                    'output-format'   => 'html',
+                    'allowed-tags'    => ['a', 'b', 'br', 'hr', 'h1', 'h2', 'h3', 'h4', 'p', 'strong', 'em', 'i', 'u', 'strike', 'ul', 'ol', 'li', 'img'],
+                    'allowed-attribs' => ['id', 'class', 'name', 'value', 'href', 'src'],
+                ]
+            );
+            $result .= $maid->clean($record->values[$field]);
         }
 
         if ($excerptLength > 0) {
@@ -130,5 +89,4 @@ class RssFeedExtension extends \Bolt\BaseExtension
 
         return new \Twig_Markup('<![CDATA[ ' . $result . ' ]]>', 'utf-8');
     }
-
 }
