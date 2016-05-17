@@ -1,5 +1,8 @@
 # Changelog for RSS Feed
 
+* 3.0.0 (2016-05-17)
+ * Bolt v3 compatible release
+
 * 2.2.3 ()
  * Use configured locale instead of hardcoded value (credit @doenietzomoeilijk)
 
