@@ -1,5 +1,8 @@
 # Changelog for RSS Feed
 
+* 3.0.1 (2016-06-14)
+ * Ensure all taxonomies are output
+
 * 3.0.0 (2016-05-17)
  * Bolt v3 compatible release
 
