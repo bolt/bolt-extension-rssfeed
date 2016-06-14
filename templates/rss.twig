@@ -21,18 +21,20 @@
                     {{ record.user.email }} ({{ record.user.displayname }})
                 </author>
                 <guid isPermaLink="false">{{ record.contenttype.singular_slug }}/{{ record.id }}</guid>
-{% if record.taxonomy.categories is defined %}
-{% for category in record.taxonomy.categories %}
-                <category><![CDATA[ {{ category }} ]]></category>
-{% endfor %}
-{% endif %}
+{% if record.taxonomy is iterable %}
+    {%- for taxonomyname, taxonomy in record.taxonomy %}
+        {%- for taxonomyvalue in taxonomy %}
+                <category domain="{{ taxonomyname }}"><![CDATA[ {{ taxonomyvalue }} ]]></category>
+        {%- endfor %}
+    {%- endfor %}
+{%- endif %}
 
                 <description>
-                {% if content_length == 0 %}
+                {%- if content_length == 0 -%}
                     {{ record|rss_safe('teaser, body') }}
-                {% else %}
+                {%- else -%}
                     {{ record|rss_safe('teaser, body', content_length) }}
-                {% endif %}
+                {%- endif -%}
                 </description>
 {% if record.image is not empty %}
                 <image>{{ paths.hosturl }}{{ thumbnail(record.image, 600, 400) }}</image>
