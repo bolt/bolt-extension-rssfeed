@@ -114,7 +114,7 @@ class RssFeedController implements ControllerProviderInterface
         foreach ($content as $slug => $recordid) {
             if (!empty($recordid)) {
                 foreach ($recordid as $record) {
-                    $key = strtotime($record->values['datepublish']) . $slug;
+                    $key = strtotime($record->values['datepublish']) . $record->values['id'] . $slug;
                     $tmp[$key] = $record;
                 }
             }
