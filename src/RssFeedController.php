@@ -147,7 +147,7 @@ class RssFeedController implements ControllerProviderInterface
         $response->setCharset('utf-8')
             ->setPublic()
             ->setSharedMaxAge(3600)
-            ->headers->set('Content-Type', 'application/rss+xml');
+            ->headers->set('Content-Type', 'application/rss+xml;charset=UTF-8');
 
         return $response;
     }
