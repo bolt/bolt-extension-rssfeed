@@ -1,5 +1,11 @@
 # Changelog for RSS Feed
 
+* 3.0.4 (2016-08-15)
+ * Added possibility to configure custom routes in routing.yml. (credit @bobdenotter)
+
+* 3.0.3 (2016-08-31)
+ * Fixed: Added charset=utf-8 to contenttype #13 (Credit @dforstercon)
+
 * 3.0.2 (2016-08-15)
  * Fixed: Date sorting
 
