@@ -6,6 +6,7 @@ use Bolt\Extension\SimpleExtension;
 use Bolt\Helpers\Html;
 use Bolt\Legacy\Content;
 use Maid\Maid;
+use Silex\Application;
 
 /**
  * RSS feeds extension for Bolt, originally by WeDesignIt, Patrick van Kouteren
@@ -18,10 +19,23 @@ class RssFeedExtension extends SimpleExtension
     /**
      * {@inheritdoc}
      */
+    protected function registerServices(Application $app)
+    {
+        $app['controller.rssfeed'] = $app->share(
+            function ($app) {
+                return new RssFeedController($app, $this->getConfig());
+            }
+        );
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     protected function registerFrontendControllers()
     {
+        $app = $this->getContainer();
         return [
-            '/' => new RssFeedController($this->getContainer(), $this->getConfig()),
+            '/' => $app['controller.rssfeed'],
         ];
     }
 
