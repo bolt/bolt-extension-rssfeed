@@ -24,3 +24,16 @@ example:
 ```html
 <link rel="alternate" type="application/rss+xml" href="/rss/feed.xml" />
 ```
+
+Configuring routing
+-------------------
+
+This extension automatically sets up routing to match the URL patterns mentioned above (like `/rss/feed.xml`). If you have need of a specific URL to publish the feed on, you must add the route to your `routing.yml` file. For example:
+
+```
+my_rss_feed:
+    path: /news.xml
+    defaults:
+        _controller: controller.rssfeed:feed
+        contenttypeslug: news
+```
