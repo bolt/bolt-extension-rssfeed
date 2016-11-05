@@ -62,8 +62,9 @@ class Controller
         );
 
         // Get our content
-        if ($contenttypeslug == 'sitewide') {
-            foreach ($this->config[$contenttypeslug]['content_types'] as $types) {
+        if ($contenttypeslug === 'sitewide') {
+            $sitewideContentTypes = (array) $this->config[$contenttypeslug]['content_types'];
+            foreach ($sitewideContentTypes as $types) {
                 $contenttypes[] = $this->app['storage']->getContentType($types);
             }
         } else {
