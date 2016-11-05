@@ -93,7 +93,8 @@ class RssFeedController implements ControllerProviderInterface
 
         // Get our content
         if ($contentTypeName == 'sitewide') {
-            foreach ($this->config[$contentTypeName]['content_types'] as $types) {
+            $sitewideContentTypes = (array) $this->config[$contenttypeslug]['content_types'];
+            foreach ($sitewideContentTypes as $types) {
                 $contentTypes[] = $storage->getContentType($types);
             }
         } else {
