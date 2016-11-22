@@ -1,6 +1,6 @@
 <?php
 
-namespace Bolt\Extension\Bolt\RssFeed;
+namespace Bolt\Extension\Bolt\RssFeed\Controller;
 
 use Bolt\Storage\EntityManager;
 use Silex\Application;

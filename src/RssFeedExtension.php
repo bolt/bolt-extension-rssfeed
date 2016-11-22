@@ -2,6 +2,7 @@
 
 namespace Bolt\Extension\Bolt\RssFeed;
 
+use Bolt\Extension\Bolt\RssFeed\Controller\RssFeedController;
 use Bolt\Extension\SimpleExtension;
 use Bolt\Helpers\Html;
 use Bolt\Legacy\Content;
