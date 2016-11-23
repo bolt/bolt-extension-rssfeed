@@ -2,7 +2,6 @@
 
 namespace Bolt\Extension\Bolt\RssFeed;
 
-use Bolt\Extension\Bolt\RssFeed\Config;
 use Bolt\Storage\Entity\Content;
 use Bolt\Storage\EntityManager;
 use Symfony\Component\HttpFoundation\Response;
