@@ -71,7 +71,7 @@ class Generator
     }
 
     /**
-     * @param $contentTypeName
+     * @param string $contentTypeName
      *
      * @return Config\ContentTypeFeed|Config\SiteWideFeed
      */
@@ -104,7 +104,7 @@ class Generator
     }
 
     /**
-     * @param $contentTypeName
+     * @param string $contentTypeName
      *
      * @return Content[]|false
      */
