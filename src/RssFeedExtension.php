@@ -2,17 +2,16 @@
 
 namespace Bolt\Extension\Bolt\RssFeed;
 
-use Bolt\Extension\Bolt\RssFeed\Controller\RssFeedController;
+use Bolt\Extension\Bolt\RssFeed\Controller\RssFeed;
 use Bolt\Extension\SimpleExtension;
 use Bolt\Helpers\Html;
-use Bolt\Legacy\Content;
+use Bolt\Storage\Entity\Content;
 use Maid\Maid;
 use Silex\Application;
 
 /**
  * RSS feeds extension for Bolt, originally by WeDesignIt, Patrick van Kouteren
  *
- * @author Patrick van Kouteren <info@wedesignit.nl>
  * @author Gawain Lynch <gawain.lynch@gmail.com>
  */
 class RssFeedExtension extends SimpleExtension
@@ -22,9 +21,20 @@ class RssFeedExtension extends SimpleExtension
      */
     protected function registerServices(Application $app)
     {
-        $app['controller.rssfeed'] = $app->share(
+        $app['rssfeed.config'] = $app->share(
+            function () {
+                return new Config\Config($this->getConfig());
+            }
+        );
+
+        $app['rssfeed.generator'] = $app->share(
             function ($app) {
-                return new RssFeedController($app, $this->getConfig());
+                return new Generator(
+                    $app['rssfeed.config'],
+                    $app['config']->get('contenttypes'),
+                    $app['storage'],
+                    $app['twig']
+                );
             }
         );
     }
@@ -34,9 +44,8 @@ class RssFeedExtension extends SimpleExtension
      */
     protected function registerFrontendControllers()
     {
-        $app = $this->getContainer();
         return [
-            '/' => $app['controller.rssfeed'],
+            '/' => new RssFeed(),
         ];
     }
 
@@ -46,6 +55,14 @@ class RssFeedExtension extends SimpleExtension
     protected function registerTwigFilters()
     {
         return ['rss_safe' => 'rssSafe'];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function registerTwigPaths()
+    {
+        return ['templates'];
     }
 
     /**
@@ -81,21 +98,19 @@ class RssFeedExtension extends SimpleExtension
             $fields = explode(',', $fields);
         }
         $fields = array_map('trim', $fields);
-        $result = '';
 
+        // Completely remove style and script blocks
+        $maid = new Maid(
+            [
+                'output-format'   => 'html',
+                'allowed-tags'    => ['a', 'b', 'br', 'hr', 'h1', 'h2', 'h3', 'h4', 'p', 'strong', 'em', 'i', 'u', 'strike', 'ul', 'ol', 'li', 'img'],
+                'allowed-attribs' => ['id', 'class', 'name', 'value', 'href', 'src'],
+            ]
+        );
+
+        $result = '';
         foreach ($fields as $field) {
-            if (!array_key_exists($field, $record->values)) {
-                continue;
-            }
-            // Completely remove style and script blocks
-            $maid = new Maid(
-                [
-                    'output-format'   => 'html',
-                    'allowed-tags'    => ['a', 'b', 'br', 'hr', 'h1', 'h2', 'h3', 'h4', 'p', 'strong', 'em', 'i', 'u', 'strike', 'ul', 'ol', 'li', 'img'],
-                    'allowed-attribs' => ['id', 'class', 'name', 'value', 'href', 'src'],
-                ]
-            );
-            $result .= $maid->clean($record->values[$field]);
+            $result .= $maid->clean($record->get($field));
         }
 
         if ($excerptLength > 0) {
