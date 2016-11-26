@@ -1,12 +1,13 @@
 # This is the config file for the RSS Feed extension.
 # Feed will be accessible at the following urls:
+#
 # Site RSS:
 #     <yoursite>/rss/feed.(xml|rss)
 #
-# Contenttype RSS:
+# ContentType RSS:
 #     <yoursite>/contenttype/rss/feed.(xml|rss)
 #
-# The contenttype is what you define in this config.
+# The ContentType is what you define in this config.
 
 # Block structure
 # ---------------
@@ -18,7 +19,7 @@
 
 # Explanation
 # -----------
-# contenttype: the content type for which to enable the feed, or 'sitewide' for the whole site
+# contenttype: the ContentType for which to enable the feed, or 'sitewide' for the whole site
 # enabled: this one is easy huh? When set to false, returns a 404 on request
 # feed_records: the number of records to provide in the feed
 # feed_template: which template to use. This needs to be in the assets directory.
@@ -32,7 +33,7 @@ sitewide:
     feed_records: 10
     feed_template: rss.twig
     content_length: 0
-    content_types: [entries, pages]
+    content_types: [ entries, pages ]
 
 # Contenttype specific RSS Examples
 # ---------------------------------
