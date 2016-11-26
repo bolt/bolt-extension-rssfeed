@@ -32,8 +32,8 @@
                 {%- endif -%}
                 </description>
 {% if record.image is not empty %}
-                <image>{{ paths.hosturl }}{{ thumbnail(record.image, 600, 400) }}</image>
-                <enclosure url="{{ paths.hosturl }}{{ thumbnail(record.image, 600, 400) }}" type="image/jpeg" />
+                <image>{{ absolute_url(thumbnail(record.image, 600, 400)) }}</image>
+                <enclosure url="{{ absolute_url(thumbnail(record.image, 600, 400)) }}" type="image/jpeg" />
 {% endif %}
             </item>
 {% endfor %}
