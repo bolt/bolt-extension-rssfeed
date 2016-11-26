@@ -14,6 +14,8 @@ class ContentTypeFeed
     /** @var int */
     protected $feedRecords;
     /** @var string */
+    protected $atomTemplate;
+    /** @var string */
     protected $feedTemplate;
     /** @var int */
     protected $contentLength;
@@ -29,6 +31,7 @@ class ContentTypeFeed
 
         $this->enabled = $config['enabled'];
         $this->feedRecords = $config['feed_records'];
+        $this->atomTemplate = $config['atom_template'];
         $this->feedTemplate = $config['feed_template'];
         $this->contentLength = $config['content_length'];
     }
@@ -69,6 +72,26 @@ class ContentTypeFeed
     public function setFeedRecords($feedRecords)
     {
         $this->feedRecords = (int) $feedRecords;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAtomTemplate()
+    {
+        return $this->atomTemplate;
+    }
+
+    /**
+     * @param string $feedTemplate
+     *
+     * @return ContentTypeFeed
+     */
+    public function setAtomTemplate($feedTemplate)
+    {
+        $this->atomTemplate = $feedTemplate;
 
         return $this;
     }
@@ -121,6 +144,7 @@ class ContentTypeFeed
         return [
             'enabled'        => false,
             'feed_records'   => 10,
+            'atom_template'  => 'atom.twig',
             'feed_template'  => 'rss.twig',
             'content_length' => 0,
         ];
