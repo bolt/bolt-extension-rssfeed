@@ -1,50 +1,57 @@
-# This is the config file for the RSS Feed extension.
+# Configuration file for the RSS Feed extension.
+#
 # Feed will be accessible at the following urls:
 #
-# Site RSS:
-#     <yoursite>/rss/feed.(xml|rss)
+# RSS:
+#    Site:         <yoursite>/rss/feed.(xml|rss)
+#    ContentType:  <yoursite>/contenttype/rss/feed.(xml|rss)
 #
-# ContentType RSS:
-#     <yoursite>/contenttype/rss/feed.(xml|rss)
+# ATOM:
+#    Site:         <yoursite>/atom/feed.(xml|atom)
+#    ContentType:  <yoursite>/contenttype/atom/feed.(xml|atom)
 #
 # The ContentType is what you define in this config.
 
 # Block structure
 # ---------------
 # contenttype:
-#   enabled: (true|false)
-#   feed_records: <int>
-#   feed_template: <template name>
-#   content_length: <int>
+#     enabled:       (true|false)
+#     feed_records:   <int>
+#     feed_template:  <template name>
+#     content_length: <int>
+#     contenttypes:   <array> (sitewide only)
+#
+# enabled:        When set to false, returns a 404 on request
+# feed_records:   Number of records to provide in the feed
+# feed_template:  RSS template to use
+# atom_template:  ATOM template to use
+# content_length: Number of characters in the content. If set to '0', the
+#                 content will not be trimmed, and HTML (links, markup, etc)
+#                 will be kept intact
+# contenttypes:   ContentTypes for which to enable the feed for
 
-# Explanation
-# -----------
-# contenttype: the ContentType for which to enable the feed, or 'sitewide' for the whole site
-# enabled: this one is easy huh? When set to false, returns a 404 on request
-# feed_records: the number of records to provide in the feed
-# feed_template: which template to use. This needs to be in the assets directory.
-# content_length: the number of characters in the content. If set to '0', the content will
-#    not be trimmed, and HTML (links, markup, etc) will be kept intact.
-
-# Site RSS Example
-# ----------------
+# Site-wide example
+# -----------------
 sitewide:
     enabled: true
     feed_records: 10
     feed_template: rss.twig
+    atom_template: atom.twig
     content_length: 0
     content_types: [ entries, pages ]
 
-# Contenttype specific RSS Examples
-# ---------------------------------
+# ContentType specific examples
+# -----------------------------
 #pages:
 #    enabled: true
 #    feed_records: 10
 #    feed_template: rss.twig
+#    atom_template: atom.twig
 #    content_length: 0
 
 #entries:
 #    enabled: false
 #    feed_records: 1
 #    feed_template: rss.twig
+#    atom_template: atom.twig
 #    content_length: 400
