@@ -51,6 +51,9 @@ class Config
         if (isset($this->contentTypeFeed[$contentTypeName])) {
             return $this->contentTypeFeed[$contentTypeName];
         }
+        if ($this->siteWideFeed->has($contentTypeName)) {
+            return $this->siteWideFeed;
+        }
 
         throw new HttpException(Response::HTTP_NOT_FOUND, sprintf('Feed for "%s" not found.', $contentTypeName));
     }

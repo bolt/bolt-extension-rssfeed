@@ -24,6 +24,20 @@ class SiteWideFeed extends ContentTypeFeed
     }
 
     /**
+     * @param string $contentTypeName
+     *
+     * @return bool
+     */
+    public function has($contentTypeName)
+    {
+        if (in_array($contentTypeName, $this->contentTypes)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
      * @return array
      */
     public function getContentTypes()
