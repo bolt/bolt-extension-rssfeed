@@ -1,5 +1,8 @@
 # Changelog for RSS Feed
 
+* 3.1.0 (2016-11-26)
+ * Refactor
+
 * 3.0.4 (2016-08-15)
  * Added possibility to configure custom routes in routing.yml. (credit @bobdenotter)
 
