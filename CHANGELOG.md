@@ -1,5 +1,8 @@
 # Changelog for RSS Feed
 
+* 3.1.1 (2016-11-26)
+ * Fixed: Sitewide configuration would fail if specific ContentType were also not configured as well
+
 * 3.1.0 (2016-11-26)
  * Refactor
 
