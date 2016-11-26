@@ -45,7 +45,37 @@ class Generator
      *
      * @return \Twig_Markup
      */
+    public function getAtom($contentTypeName = null)
+    {
+        $context = $this->getContext($contentTypeName);
+        /** @var Config\ContentTypeFeed|Config\SiteWideFeed $feedConfig */
+        $feedConfig = $context['config'];
+        $feed = $this->twig->render($feedConfig->getAtomTemplate(), $context);
+
+        return new \Twig_Markup($feed, 'UTF-8');
+    }
+
+    /**
+     * @param string|null $contentTypeName
+     *
+     * @return \Twig_Markup
+     */
     public function getFeed($contentTypeName = null)
+    {
+        $context = $this->getContext($contentTypeName);
+        /** @var Config\ContentTypeFeed|Config\SiteWideFeed $feedConfig */
+        $feedConfig = $context['config'];
+        $feed = $this->twig->render($feedConfig->getFeedTemplate(), $context);
+
+        return new \Twig_Markup($feed, 'UTF-8');
+    }
+
+    /**
+     * @param string|null $contentTypeName
+     *
+     * @return array
+     */
+    protected function getContext($contentTypeName = null)
     {
         $config = $this->getConfig($contentTypeName);
         if ($config->isEnabled() === false) {
@@ -60,14 +90,12 @@ class Generator
         ksort($content);
         $content = array_slice($content, 0, $config->getFeedRecords());
 
-        $context = [
+        return [
             'records'        => $content,
             'content_length' => $config->getContentLength(),
             $contentTypeName => $content,
+            'config'         => $config,
         ];
-        $feed = $this->twig->render($config->getFeedTemplate(), $context);
-
-        return new \Twig_Markup($feed, 'UTF-8');
     }
 
     /**
