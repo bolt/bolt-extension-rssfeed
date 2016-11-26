@@ -2,7 +2,7 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
     <channel>
         <title>{{ app.config.get('general/sitename') }}</title>
-        <atom:link href="{{ paths.currenturl }}" rel="self" type="application/rss+xml"/>
+        <atom:link href="{{ canonical }}" rel="self" type="application/rss+xml"/>
         <link>{{ url('homepage') }}</link>
 {% if app.config.get('general/payoff') is defined %}
         <description>{{ app.config.get('general/payoff') }}</description>
