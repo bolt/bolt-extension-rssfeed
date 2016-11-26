@@ -88,10 +88,11 @@ class RssFeedExtension extends SimpleExtension
      * @param Content $record        Bolt Content object
      * @param string  $fields        Comma separated list of fields to clean up
      * @param integer $excerptLength Number of chars of the excerpt
+     * @param bool    $isRss         Called from an ATOM render
      *
      * @return string RSS safe string
      */
-    public function rssSafe($record, $fields = '', $excerptLength = 0)
+    public function rssSafe($record, $fields = '', $excerptLength = 0, $isRss = true)
     {
         // Make sure we have an array of fields. Even if it's only one.
         if (!is_array($fields)) {
@@ -103,7 +104,7 @@ class RssFeedExtension extends SimpleExtension
         $maid = new Maid(
             [
                 'output-format'   => 'html',
-                'allowed-tags'    => ['a', 'b', 'br', 'hr', 'h1', 'h2', 'h3', 'h4', 'p', 'strong', 'em', 'i', 'u', 'strike', 'ul', 'ol', 'li', 'img'],
+                'allowed-tags'    => ['a', 'b', 'br', 'div', 'hr', 'h1', 'h2', 'h3', 'h4', 'p', 'strong', 'em', 'i', 'u', 'strike', 'ul', 'ol', 'li', 'img'],
                 'allowed-attribs' => ['id', 'class', 'name', 'value', 'href', 'src'],
             ]
         );
@@ -116,7 +117,10 @@ class RssFeedExtension extends SimpleExtension
         if ($excerptLength > 0) {
             $result = Html::trimText($result, $excerptLength);
         }
+        if ($isRss) {
+            $result = '<![CDATA[ ' . $result . ' ]]>';
+        }
 
-        return new \Twig_Markup('<![CDATA[ ' . $result . ' ]]>', 'utf-8');
+        return new \Twig_Markup($result, 'utf-8');
     }
 }
