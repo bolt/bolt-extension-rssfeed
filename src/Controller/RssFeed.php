@@ -22,14 +22,21 @@ class RssFeed implements ControllerProviderInterface
         /** @var $ctr ControllerCollection */
         $ctr = $app['controllers_factory'];
 
-        // Sitewide feed
+        // Site-wide feed
+        $app->match('/atom/feed.{extension}', [$this, 'atom'])
+            ->assert('extension', '(atom|xml)')
+        ;
         $app->match('/rss/feed.{extension}', [$this, 'feed'])
-            ->assert('extension', '(xml|rss)')
+            ->assert('extension', '(rss|xml)')
         ;
 
         // ContentType specific feed(s)
+        $app->match('/{contentTypeName}/atom/feed.{extension}', [$this, 'atom'])
+            ->assert('extension', '(atom|xml)')
+            ->assert('contentTypeName', $this->getContentTypeAssert($app))
+        ;
         $app->match('/{contentTypeName}/rss/feed.{extension}', [$this, 'feed'])
-            ->assert('extension', '(xml|rss)')
+            ->assert('extension', '(rss|xml)')
             ->assert('contentTypeName', $this->getContentTypeAssert($app))
         ;
 
@@ -37,7 +44,28 @@ class RssFeed implements ControllerProviderInterface
     }
 
     /**
-     * @param string $contentTypeName
+     * @param Application $app
+     * @param string      $contentTypeName
+     *
+     * @return Response
+     */
+    public function atom(Application $app, $contentTypeName = null)
+    {
+        $atom = $app['rssfeed.generator']->getAtom($contentTypeName);
+
+        $response = new Response($atom, Response::HTTP_OK);
+        $response->setCharset('utf-8')
+            ->setPublic()
+            ->setSharedMaxAge(3600)
+            ->headers->set('Content-Type', 'application/atom+xml;charset=UTF-8')
+        ;
+
+        return $response;
+    }
+
+    /**
+     * @param Application $app
+     * @param string      $contentTypeName
      *
      * @return Response
      */
@@ -49,7 +77,8 @@ class RssFeed implements ControllerProviderInterface
         $response->setCharset('utf-8')
             ->setPublic()
             ->setSharedMaxAge(3600)
-            ->headers->set('Content-Type', 'application/rss+xml;charset=UTF-8');
+            ->headers->set('Content-Type', 'application/rss+xml;charset=UTF-8')
+        ;
 
         return $response;
     }
