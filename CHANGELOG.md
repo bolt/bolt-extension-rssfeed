@@ -1,5 +1,8 @@
 # Changelog for RSS Feed
 
+* 3.1.2 (2016-11-26)
+ * Fixed: Use correct named paramter in template link
+
 * 3.1.1 (2016-11-26)
  * Fixed: Sitewide configuration would fail if specific ContentType were also not configured as well
 
