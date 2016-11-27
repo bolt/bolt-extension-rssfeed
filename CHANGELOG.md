@@ -5,6 +5,9 @@
  * Fixed Migrate remaining paths to Bolt v3 format
  * Added: ATOM feeds & template
 
+* 3.1.3 (2016-11-27)
+ * Fixed: Only show published records
+
 * 3.1.2 (2016-11-26)
  * Fixed: Use correct named paramter in template link
 

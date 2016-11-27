@@ -140,7 +140,10 @@ class Generator
     {
         $config = $this->config->getContentTypeFeed($contentTypeName);
         $repo = $this->em->getRepository($contentTypeName);
-        $query = $repo->createQueryBuilder()
+        $query = $repo
+            ->createQueryBuilder()
+            ->where('status = :status')
+            ->setParameter('status', 'published')
             ->setMaxResults($config->getFeedRecords())
             ->orderBy('datepublish', 'DESC')
         ;
