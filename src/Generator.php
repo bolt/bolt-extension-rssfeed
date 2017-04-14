@@ -88,7 +88,7 @@ class Generator
             $content = $this->contentArrayAppend($content, $values);
         }
         ksort($content);
-        $content = array_slice($content, 0, $config->getFeedRecords());
+        $content = array_slice(array_reverse($content), 0, $config->getFeedRecords());
 
         return [
             'records'        => $content,
@@ -166,7 +166,7 @@ class Generator
         }
 
         foreach ($newContent as $new) {
-            $key = $new->getDatecreated()->getTimestamp() . '.' . $new->getId() . '.' . $new->getSlug();
+            $key = $new->getDatepublish()->getTimestamp() . '.' . $new->getId() . '.' . $new->getSlug();
             $content[$key] = $new;
         }
 
