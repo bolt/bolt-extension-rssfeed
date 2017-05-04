@@ -94,6 +94,9 @@ class RssFeedExtension extends SimpleExtension
      */
     public function rssSafe($record, $fields = '', $excerptLength = 0, $isRss = true)
     {
+        //get Parsedown to clean markdown entries
+        $parseDown = new \Parsedown();
+
         // Make sure we have an array of fields. Even if it's only one.
         if (!is_array($fields)) {
             $fields = explode(',', $fields);
@@ -111,7 +114,7 @@ class RssFeedExtension extends SimpleExtension
 
         $result = '';
         foreach ($fields as $field) {
-            $result .= $maid->clean($record->get($field));
+            $result .= $maid->clean($parseDown->text($record->get($field)));
         }
 
         if ($excerptLength > 0) {
