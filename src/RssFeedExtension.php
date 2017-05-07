@@ -77,7 +77,7 @@ class RssFeedExtension extends SimpleExtension
                 'feed_template'  => 'rss.twig',
                 'content_length' => 0,
                 'content_types'  => ['pages'],
-                ],
+            ],
         ];
     }
 
@@ -112,9 +112,17 @@ class RssFeedExtension extends SimpleExtension
             ]
         );
 
+        $fieldTypes = $record->getContentType()->getFields();
         $result = '';
+
         foreach ($fields as $field) {
-            $result .= $maid->clean($parseDown->text($record->get($field)));
+
+            $fieldValue = $record->get($field);
+            if (!empty($fieldTypes[$field]['type']) && $fieldTypes[$field]['type'] == 'markdown' ) {
+                $fieldValue = $parseDown->parse($fieldValue);
+            }
+
+            $result .= $maid->clean($fieldValue);
         }
 
         if ($excerptLength > 0) {
