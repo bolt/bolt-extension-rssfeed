@@ -77,7 +77,7 @@ class RssFeedExtension extends SimpleExtension
                 'feed_template'  => 'rss.twig',
                 'content_length' => 0,
                 'content_types'  => ['pages'],
-                ],
+            ],
         ];
     }
 
@@ -94,6 +94,9 @@ class RssFeedExtension extends SimpleExtension
      */
     public function rssSafe($record, $fields = '', $excerptLength = 0, $isRss = true)
     {
+        //get Parsedown to clean markdown entries
+        $parseDown = new \Parsedown();
+
         // Make sure we have an array of fields. Even if it's only one.
         if (!is_array($fields)) {
             $fields = explode(',', $fields);
@@ -109,9 +112,17 @@ class RssFeedExtension extends SimpleExtension
             ]
         );
 
+        $fieldTypes = $record->getContentType()->getFields();
         $result = '';
+
         foreach ($fields as $field) {
-            $result .= $maid->clean($record->get($field));
+
+            $fieldValue = $record->get($field);
+            if (!empty($fieldTypes[$field]['type']) && $fieldTypes[$field]['type'] == 'markdown' ) {
+                $fieldValue = $parseDown->parse($fieldValue);
+            }
+
+            $result .= $maid->clean($fieldValue);
         }
 
         if ($excerptLength > 0) {
