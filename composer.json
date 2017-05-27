@@ -1,9 +1,14 @@
 {
     "name": "bolt/rssfeed",
-    "description": "RSS feeds extension for Bolt",
+    "description": "RSS, JSON and Atom feeds extension for Bolt",
     "type": "bolt-extension",
     "keywords": [
-        "RSS"
+        "RSS",
+        "JSON",
+        "Atom",
+        "feed",
+        "feeds",
+        "syndication"
     ],
     "require": {
         "bolt/bolt": "^3.2.3"
@@ -13,7 +18,11 @@
         {
             "name": "Gawain Lynch",
             "email": "gawain.lynch@gmail.com"
-        }
+        },
+        {
+            "name": "Bob den Otter",
+            "email": "bob@twokings.nl"
+        },
     ],
     "autoload": {
         "psr-4": {

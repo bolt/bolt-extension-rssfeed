@@ -3,9 +3,11 @@
 namespace Bolt\Extension\Bolt\RssFeed;
 
 use Bolt\Storage\Entity\Content;
+use Bolt\Storage\Entity\Users;
 use Bolt\Storage\EntityManager;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Twig_Environment;
 
 /**
@@ -23,6 +25,10 @@ class Generator
     protected $em;
     /** @var Twig_Environment */
     protected $twig;
+    /** @var UrlGeneratorInterface */
+    protected $urlGenerator;
+    protected $sitename;
+    protected $payoff;
 
     /**
      * Constructor.
@@ -32,12 +38,16 @@ class Generator
      * @param EntityManager    $em
      * @param Twig_Environment $twig
      */
-    public function __construct(Config\Config $config, array $contentTypes, EntityManager $em, Twig_Environment $twig)
+    public function __construct(Config\Config $config, array $contentTypes, EntityManager $em, Twig_Environment $twig, UrlGeneratorInterface $urlGenerator, $sitename, $payoff)
     {
         $this->config = $config;
         $this->contentTypes = $contentTypes;
         $this->em = $em;
         $this->twig = $twig;
+        $this->urlGenerator = $urlGenerator;
+        $this->sitename = $sitename;
+        $this->payoff = $payoff;
+
     }
 
     /**
@@ -69,6 +79,53 @@ class Generator
 
         return new \Twig_Markup($feed, 'UTF-8');
     }
+
+    /**
+     * @param string|null $contentTypeName
+     *
+     * @return array
+     */
+    public function getJson($contentTypeName = null)
+    {
+        $context = $this->getContext($contentTypeName);
+        $parseContent = new ParseContent();
+        $home = $this->urlGenerator->generate('homepage', [], UrlGeneratorInterface::ABSOLUTE_URL);
+        $feedItems = [];
+
+        /** @var Content $record */
+        foreach ($context['records'] as $id => $record) {
+            $url = $this->urlGenerator->generate(
+                'contentlink',
+                ['contenttypeslug' => $record->getContenttype(), 'slug' => $record->getSlug()],
+                UrlGeneratorInterface::ABSOLUTE_URL
+            );
+            $content = (string) $parseContent->rssSafe($record, 'teaser, introduction, body, text, content', 0, false);
+            $user = $this->em->getRepository(Users::class)->find($record->getOwnerid());
+            $feedItems[] = [
+                'id' => $id,
+                'url' => $url,
+                'title' => $record->title,
+                'content_html' => $content,
+                'date_published' => $record->getDatecreated()->toRfc3339String(),
+                'date_modified' => $record->getDatechanged()->toRfc3339String(),
+                'author' => [
+                    'name' => $user ? $user->getDisplayname() : '',
+                ],
+            ];
+        }
+
+        $feedJson = [
+            'version' => 'https://jsonfeed.org/version/1',
+            'home_page_url' => $home,
+            'feed_url' => $home . 'json/feed.json',
+            'title' => $this->sitename,
+            'description' => $this->payoff,
+            'items' => $feedItems,
+        ];
+
+        return $feedJson;
+    }
+
 
     /**
      * @param string|null $contentTypeName
