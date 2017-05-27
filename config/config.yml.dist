@@ -1,19 +1,35 @@
 # Configuration file for the RSS Feed extension.
 #
-# Feed will be accessible at the following urls:
+# The feeds will be accessible at the following urls:
 #
 # RSS:
 #    Site:         <yoursite>/rss/feed.(xml|rss)
 #    ContentType:  <yoursite>/contenttype/rss/feed.(xml|rss)
 #
+# JSON:
+#    Site:         <yoursite>/json/feed.json
+#    ContentType:  <yoursite>/contenttype/json/feed.json
+#
 # ATOM:
 #    Site:         <yoursite>/atom/feed.(xml|atom)
 #    ContentType:  <yoursite>/contenttype/atom/feed.(xml|atom)
 #
-# The ContentType is what you define in this config.
+
+# This extension publishes feeds in different formats. You can select which ones you'd like.
+feeds:
+    rss: true
+    json: true
+    atom: true
+
+# Autodiscovery allows Feed aggregators to find your feeds more easily.
+autodiscovery: true
 
 # Block structure
 # ---------------
+#
+# Feeds for different contenttypes can have different options. This also is the case for the 'site wide' feed, which is
+# used most commonly.
+#
 # contenttype:
 #     enabled:       (true|false)
 #     feed_records:   <int>

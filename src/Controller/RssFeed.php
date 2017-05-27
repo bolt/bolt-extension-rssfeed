@@ -23,20 +23,25 @@ class RssFeed implements ControllerProviderInterface
         $ctr = $app['controllers_factory'];
 
         // Site-wide feed
-        $app->match('/atom/feed.{extension}', [$this, 'atom'])
+        $app->get('/atom/feed.{extension}', [$this, 'atom'])
             ->assert('extension', '(atom|xml)')
         ;
-        $app->match('/rss/feed.{extension}', [$this, 'feed'])
+        $app->get('/rss/feed.{extension}', [$this, 'feed'])
             ->assert('extension', '(rss|xml)')
         ;
+        $app->get('/json/feed.json', [$this, 'json']);
 
         // ContentType specific feed(s)
-        $app->match('/{contentTypeName}/atom/feed.{extension}', [$this, 'atom'])
+        $app->get('/{contentTypeName}/atom/feed.{extension}', [$this, 'atom'])
             ->assert('extension', '(atom|xml)')
             ->assert('contentTypeName', $this->getContentTypeAssert($app))
         ;
-        $app->match('/{contentTypeName}/rss/feed.{extension}', [$this, 'feed'])
+        $app->get('/{contentTypeName}/rss/feed.{extension}', [$this, 'feed'])
             ->assert('extension', '(rss|xml)')
+            ->assert('contentTypeName', $this->getContentTypeAssert($app))
+        ;
+
+        $app->get('/{contentTypeName}/json/feed.json', [$this, 'json'])
             ->assert('contentTypeName', $this->getContentTypeAssert($app))
         ;
 
@@ -82,6 +87,30 @@ class RssFeed implements ControllerProviderInterface
 
         return $response;
     }
+
+    /**
+     * @param Application $app
+     * @param string      $contentTypeName
+     *
+     * @return Response
+     */
+    public function json(Application $app, $contentTypeName = null)
+    {
+        $json = $app['rssfeed.generator']->getJson($contentTypeName);
+
+        // Put our own JSON together, instead of using JSONResponse, because pretty printing is nice.
+        $json = json_encode($json, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+
+        $response = new Response($json, Response::HTTP_OK);
+        $response->setCharset('utf-8')
+            ->setPublic()
+            ->setSharedMaxAge(3600)
+            ->headers->set('Content-Type', 'application/json;charset=UTF-8')
+        ;
+
+        return $response;
+    }
+
 
     /**
      * Get a value to use in 'assert() with the available ContentTypes

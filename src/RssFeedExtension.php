@@ -2,12 +2,14 @@
 
 namespace Bolt\Extension\Bolt\RssFeed;
 
+use Bolt\Asset\Snippet\Snippet;
+use Bolt\Asset\Target;
+use Bolt\Controller\Zone;
 use Bolt\Extension\Bolt\RssFeed\Controller\RssFeed;
 use Bolt\Extension\SimpleExtension;
-use Bolt\Helpers\Html;
 use Bolt\Storage\Entity\Content;
-use Maid\Maid;
 use Silex\Application;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * RSS feeds extension for Bolt, originally by WeDesignIt, Patrick van Kouteren
@@ -33,7 +35,10 @@ class RssFeedExtension extends SimpleExtension
                     $app['rssfeed.config'],
                     $app['config']->get('contenttypes'),
                     $app['storage'],
-                    $app['twig']
+                    $app['twig'],
+                    $app['url_generator'],
+                    $app['config']->get('general/sitename'),
+                    $app['config']->get('general/payoff')
                 );
             }
         );
@@ -71,6 +76,12 @@ class RssFeedExtension extends SimpleExtension
     protected function getDefaultConfig()
     {
         return [
+            'feeds' => [
+                'rss' => true,
+                'json' => true,
+                'atom' => true
+            ],
+            'autodiscovery' => true,
             'sitewide' => [
                 'enabled'        => true,
                 'feed_records'   => 10,
@@ -94,44 +105,60 @@ class RssFeedExtension extends SimpleExtension
      */
     public function rssSafe($record, $fields = '', $excerptLength = 0, $isRss = true)
     {
-        //get Parsedown to clean markdown entries
-        $parseDown = new \Parsedown();
+        $parseContent = new ParseContent();
 
-        // Make sure we have an array of fields. Even if it's only one.
-        if (!is_array($fields)) {
-            $fields = explode(',', $fields);
-        }
-        $fields = array_map('trim', $fields);
+        return $parseContent->rssSafe($record, $fields, $excerptLength, $isRss);
+    }
 
-        // Completely remove style and script blocks
-        $maid = new Maid(
-            [
-                'output-format'   => 'html',
-                'allowed-tags'    => ['a', 'b', 'br', 'div', 'hr', 'h1', 'h2', 'h3', 'h4', 'p', 'strong', 'em', 'i', 'u', 'strike', 'ul', 'ol', 'li', 'img'],
-                'allowed-attribs' => ['id', 'class', 'name', 'value', 'href', 'src'],
-            ]
-        );
+    /**
+     * {@inheritdoc}
+     */
+    protected function registerAssets()
+    {
+        $app = $this->getContainer();
 
-        $fieldTypes = $record->getContentType()->getFields();
-        $result = '';
-
-        foreach ($fields as $field) {
-
-            $fieldValue = $record->get($field);
-            if (!empty($fieldTypes[$field]['type']) && $fieldTypes[$field]['type'] == 'markdown' ) {
-                $fieldValue = $parseDown->parse($fieldValue);
-            }
-
-            $result .= $maid->clean($fieldValue);
+        if (!$app['rssfeed.config']->getAutodiscovery()) {
+            return;
         }
 
-        if ($excerptLength > 0) {
-            $result = Html::trimText($result, $excerptLength);
+        $snippet = new Snippet();
+        $snippet
+            ->setLocation(Target::END_OF_HEAD)
+            ->setZone(Zone::FRONTEND)
+            ->setCallback([$this, 'autodiscoverySnippet'])
+        ;
+
+        return [
+            $snippet,
+        ];
+    }
+
+    public function autodiscoverySnippet()
+    {
+        $app = $this->getContainer();
+        $feeds = $app['rssfeed.config']->getEnabledFeeds();
+
+        $snippet = [];
+
+        if ($feeds['rss']) {
+            $snippet[] = sprintf(
+                '<link rel="alternate" type="application/rss+xml" title="RSS feed" href="%srss/feed.xml">',
+                $app['url_generator']->generate('homepage', [], UrlGeneratorInterface::ABSOLUTE_URL)
+            );
         }
-        if ($isRss) {
-            $result = '<![CDATA[ ' . $result . ' ]]>';
+        if ($feeds['json']) {
+            $snippet[] = sprintf(
+                '<link rel="alternate" type="application/json" title="JSON feed" href="%sjson/feed.json">',
+                $app['url_generator']->generate('homepage', [], UrlGeneratorInterface::ABSOLUTE_URL)
+            );
+        }
+        if ($feeds['atom']) {
+            $snippet[] = sprintf(
+                '<link rel="alternate" type="application/atom+xml" title="Atom feed" href="%satom/feed.xml">',
+                $app['url_generator']->generate('homepage', [], UrlGeneratorInterface::ABSOLUTE_URL)
+            );
         }
 
-        return new \Twig_Markup($result, 'utf-8');
+        return implode("\n", $snippet);
     }
 }

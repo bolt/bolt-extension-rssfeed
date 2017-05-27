@@ -17,6 +17,9 @@ class Config
     /** @var SiteWideFeed */
     protected $siteWideFeed;
 
+    protected $feeds;
+    protected $autodiscovery;
+
     /**
      * Constructor.
      *
@@ -27,10 +30,12 @@ class Config
         foreach ($config as $name => $values) {
             if ($name === 'sitewide') {
                 $this->siteWideFeed = new SiteWideFeed((array) $values);
-            } else {
+            } else if (!in_array($name, ['feeds', 'autodiscovery'])) {
                 $this->contentTypeFeed[$name] = new ContentTypeFeed((array) $values);
             }
         }
+        $this->feeds = (array) $config['feeds'];
+        $this->autodiscovery = (boolean) $config['autodiscovery'];
     }
 
     /**
@@ -89,5 +94,21 @@ class Config
         $this->siteWideFeed = $siteWideFeed;
 
         return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getEnabledFeeds()
+    {
+        return $this->feeds;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getAutodiscovery()
+    {
+        return $this->autodiscovery;
     }
 }
