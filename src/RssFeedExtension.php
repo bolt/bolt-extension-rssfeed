@@ -42,6 +42,12 @@ class RssFeedExtension extends SimpleExtension
                 );
             }
         );
+
+        $app['controller.rssfeed'] = $app->share(
+            function () {
+                return new RssFeed();
+            }
+        );
     }
 
     /**
@@ -49,8 +55,10 @@ class RssFeedExtension extends SimpleExtension
      */
     protected function registerFrontendControllers()
     {
+        $app = $this->getContainer();
+
         return [
-            '/' => new RssFeed(),
+            '/' => $app['controller.rssfeed'],
         ];
     }
 
