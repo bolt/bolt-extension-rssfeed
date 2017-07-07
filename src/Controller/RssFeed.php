@@ -25,24 +25,31 @@ class RssFeed implements ControllerProviderInterface
         // Site-wide feed
         $app->get('/atom/feed.{extension}', [$this, 'atom'])
             ->assert('extension', '(atom|xml)')
+            ->bind('feedAtom')
         ;
         $app->get('/rss/feed.{extension}', [$this, 'feed'])
             ->assert('extension', '(rss|xml)')
+            ->bind('feedRss')
         ;
-        $app->get('/json/feed.json', [$this, 'json']);
+        $app->get('/json/feed.json', [$this, 'json'])
+            ->bind('feedJson')
+        ;
 
         // ContentType specific feed(s)
         $app->get('/{contentTypeName}/atom/feed.{extension}', [$this, 'atom'])
             ->assert('extension', '(atom|xml)')
             ->assert('contentTypeName', $this->getContentTypeAssert($app))
+            ->bind('feedAtomSingle')
         ;
         $app->get('/{contentTypeName}/rss/feed.{extension}', [$this, 'feed'])
             ->assert('extension', '(rss|xml)')
             ->assert('contentTypeName', $this->getContentTypeAssert($app))
+            ->bind('feedRssSingle')
         ;
 
         $app->get('/{contentTypeName}/json/feed.json', [$this, 'json'])
             ->assert('contentTypeName', $this->getContentTypeAssert($app))
+            ->bind('feedJsonSingle')
         ;
 
         return $ctr;
