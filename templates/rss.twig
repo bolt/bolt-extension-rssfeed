@@ -13,7 +13,7 @@
 {% set user = app.users.getUser(record.ownerid) %}
             <item>
                 <title>{{ record.title|striptags }}</title>
-                <link>{{ url('contentlink', { 'contenttypeslug': record.contenttype, 'slug': record.slug } ) }}</link>
+                <link>{{ url('contentlink', { 'contenttypeslug': record.contenttype.singular_slug, 'slug': record.slug } ) }}</link>
                 <pubDate>{{ record.datepublish|date("r") }}</pubDate>
                 <author>{{ user.email|default('unknown') }} ({{ user.displayname|default('unknown') }})</author>
                 <guid isPermaLink="false">{{ record.contenttype.singular_slug }}/{{ record.id }}</guid>

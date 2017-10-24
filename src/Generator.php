@@ -94,9 +94,10 @@ class Generator
 
         /** @var Content $record */
         foreach ($context['records'] as $id => $record) {
+            $contentType = $record->getContenttype();
             $url = $this->urlGenerator->generate(
                 'contentlink',
-                ['contenttypeslug' => $record->getContenttype(), 'slug' => $record->getSlug()],
+                ['contenttypeslug' => $contentType['singular_slug'], 'slug' => $record->getSlug()],
                 UrlGeneratorInterface::ABSOLUTE_URL
             );
             $content = (string) $parseContent->rssSafe($record, 'teaser, introduction, body, text, content', 0, false);
