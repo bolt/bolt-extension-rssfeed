@@ -11,7 +11,7 @@
 
         <entry>
             <title xml:lang="{{ htmllang() }}">{{ record.title|striptags }}</title>
-            <link href="{{ url('contentlink', { 'contenttypeslug': record.contenttype, 'slug': record.slug } ) }}"/>
+            <link href="{{ url('contentlink', { 'contenttypeslug': record.contenttype.singular_slug, 'slug': record.slug } ) }}"/>
             <published>{{ record.datepublish|date("r") }}</published>
             <author>
                 <name>{{ user.email|default('unknown') }}</name>
