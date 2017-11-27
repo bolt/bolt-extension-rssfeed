@@ -14,8 +14,8 @@
             <link href="{{ url('contentlink', { 'contenttypeslug': record.contenttype.singular_slug, 'slug': record.slug } ) }}"/>
             <published>{{ record.datepublish|date("r") }}</published>
             <author>
-                <name>{{ user.email|default('unknown') }}</name>
-                <email>{{ user.displayname|default('unknown') }}</email>
+                <name>{{ user.displayname|default('unknown') }}</name>
+                <email>{{ user.email|default('unknown') }}</email>
             </author>
             <id>{{ record.contenttype.singular_slug }}-{{ record.id }}</id>
             {% if record.taxonomy is iterable %}
