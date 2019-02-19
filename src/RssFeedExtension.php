@@ -38,7 +38,8 @@ class RssFeedExtension extends SimpleExtension
                     $app['twig'],
                     $app['url_generator'],
                     $app['config']->get('general/sitename'),
-                    $app['config']->get('general/payoff')
+                    $app['config']->get('general/payoff'),
+                    $app['config']->get('general/database/prefix')
                 );
             }
         );

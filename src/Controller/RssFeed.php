@@ -63,7 +63,8 @@ class RssFeed implements ControllerProviderInterface
      */
     public function atom(Application $app, $contentTypeName = null)
     {
-        $atom = $app['rssfeed.generator']->getAtom($contentTypeName);
+        $filter = $app['request']->query->get('filter', []);
+        $atom = $app['rssfeed.generator']->getAtom($contentTypeName, $filter);
 
         $response = new Response($atom, Response::HTTP_OK);
         $response->setCharset('utf-8')
@@ -83,7 +84,8 @@ class RssFeed implements ControllerProviderInterface
      */
     public function feed(Application $app, $contentTypeName = null)
     {
-        $feed = $app['rssfeed.generator']->getFeed($contentTypeName);
+        $filter = $app['request']->query->get('filter', []);
+        $feed = $app['rssfeed.generator']->getFeed($contentTypeName, $filter);
 
         $response = new Response($feed, Response::HTTP_OK);
         $response->setCharset('utf-8')
@@ -103,7 +105,8 @@ class RssFeed implements ControllerProviderInterface
      */
     public function json(Application $app, $contentTypeName = null)
     {
-        $json = $app['rssfeed.generator']->getJson($contentTypeName);
+        $filter = $app['request']->query->get('filter', []);
+        $json = $app['rssfeed.generator']->getJson($contentTypeName, $filter);
 
         // Put our own JSON together, instead of using JSONResponse, because pretty printing is nice.
         $json = json_encode($json, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
