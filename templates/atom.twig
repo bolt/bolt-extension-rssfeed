@@ -3,7 +3,7 @@
     <title>{{ app.config.get('general/sitename') }}</title>
     <subtitle>{{ app.config.get('general/payoff') }}</subtitle>
     <link href="{{ url('homepage') }}"/>
-    <language>{{ app.config.get('general/locale')|lower }}</language>
+    <language>{{ htmllang()|lower }}</language>
     <generator>Bolt</generator>
     <generator uri="http://bolt.cm/" version="1.0">Bolt CMS</generator>
     {%- for record in records %}
