@@ -4,9 +4,9 @@ RSS, JSON and Atom feed publisher
 Creates sitewide and/or contenttype specific feeds for your Bolt website.
 
 After installation, a configuration file will be created as
-`app/config/extensions/rssfeed.bolt.yml`, where you can define how the various 
-feeds should be created. Depending on your set up in the extension's 
-configuration, you can access RSS feeds either by sitewide or contenttype 
+`app/config/extensions/rssfeed.bolt.yml`, where you can define how the various
+feeds should be created. Depending on your set up in the extension's
+configuration, you can access RSS feeds either by sitewide or contenttype
 specific URLs:
 
  - **Site wide**: `/rss/feed.{extension}`
@@ -34,3 +34,22 @@ my_rss_feed:
         _controller: controller.rssfeed:feed
         contenttypeslug: news
 ```
+
+Taxonomy filters
+----------------
+
+You can apply a taxonomy filter as a query string to your feeds, like so:
+
+```
+?filter[taxonomyname]=slug
+```
+
+For example:
+
+```
+?filter[categories]=movies
+?filter[groups]=meta
+?filter[tags]=cinema
+```
+
+This only works for at most one filter and only for taxonomies.

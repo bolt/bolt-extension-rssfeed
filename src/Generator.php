@@ -5,6 +5,7 @@ namespace Bolt\Extension\Bolt\RssFeed;
 use Bolt\Storage\Entity\Content;
 use Bolt\Storage\Entity\Users;
 use Bolt\Storage\EntityManager;
+use Doctrine\DBAL\Query\QueryBuilder;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -27,18 +28,27 @@ class Generator
     protected $twig;
     /** @var UrlGeneratorInterface */
     protected $urlGenerator;
+    /** @var string */
     protected $sitename;
+    /** @var string */
     protected $payoff;
+    /** @var string */
+    protected $databasePrefix;
+
 
     /**
      * Constructor.
      *
-     * @param Config\Config    $config
-     * @param array            $contentTypes
-     * @param EntityManager    $em
-     * @param Twig_Environment $twig
+     * @param Config\Config         $config
+     * @param array                 $contentTypes
+     * @param EntityManager         $em
+     * @param Twig_Environment      $twig
+     * @param UrlGeneratorInterface $urlGenerator
+     * @param string                $sitename
+     * @param string                $payoff
+     * @param string                $databasePrefix
      */
-    public function __construct(Config\Config $config, array $contentTypes, EntityManager $em, Twig_Environment $twig, UrlGeneratorInterface $urlGenerator, $sitename, $payoff)
+    public function __construct(Config\Config $config, array $contentTypes, EntityManager $em, Twig_Environment $twig, UrlGeneratorInterface $urlGenerator, $sitename, $payoff, $databasePrefix)
     {
         $this->config = $config;
         $this->contentTypes = $contentTypes;
@@ -47,17 +57,19 @@ class Generator
         $this->urlGenerator = $urlGenerator;
         $this->sitename = $sitename;
         $this->payoff = $payoff;
+        $this->databasePrefix = $databasePrefix;
 
     }
 
     /**
      * @param string|null $contentTypeName
+     * @param array       $filter
      *
      * @return \Twig_Markup
      */
-    public function getAtom($contentTypeName = null)
+    public function getAtom($contentTypeName = null, array $filter = [])
     {
-        $context = $this->getContext($contentTypeName);
+        $context = $this->getContext($contentTypeName, $filter);
         /** @var Config\ContentTypeFeed|Config\SiteWideFeed $feedConfig */
         $feedConfig = $context['config'];
         $feed = $this->twig->render($feedConfig->getAtomTemplate(), $context);
@@ -67,12 +79,13 @@ class Generator
 
     /**
      * @param string|null $contentTypeName
+     * @param array       $filter
      *
      * @return \Twig_Markup
      */
-    public function getFeed($contentTypeName = null)
+    public function getFeed($contentTypeName = null, array $filter = [])
     {
-        $context = $this->getContext($contentTypeName);
+        $context = $this->getContext($contentTypeName, $filter);
         /** @var Config\ContentTypeFeed|Config\SiteWideFeed $feedConfig */
         $feedConfig = $context['config'];
         $feed = $this->twig->render($feedConfig->getFeedTemplate(), $context);
@@ -82,12 +95,13 @@ class Generator
 
     /**
      * @param string|null $contentTypeName
+     * @param array       $filter
      *
      * @return array
      */
-    public function getJson($contentTypeName = null)
+    public function getJson($contentTypeName = null, array $filter = [])
     {
-        $context = $this->getContext($contentTypeName);
+        $context = $this->getContext($contentTypeName, $filter);
         $parseContent = new ParseContent();
         $home = $this->urlGenerator->generate('homepage', [], UrlGeneratorInterface::ABSOLUTE_URL);
         $feedItems = [];
@@ -130,10 +144,11 @@ class Generator
 
     /**
      * @param string|null $contentTypeName
+     * @param array       $filter
      *
      * @return array
      */
-    protected function getContext($contentTypeName = null)
+    protected function getContext($contentTypeName = null, array $filter = [])
     {
         $config = $this->getConfig($contentTypeName);
         if ($config->isEnabled() === false) {
@@ -143,7 +158,7 @@ class Generator
         $content = [];
         $contentTypes = $this->getContentTypes($contentTypeName);
         foreach ($contentTypes as $values) {
-            $content = $this->contentArrayAppend($content, $values);
+            $content = $this->contentArrayAppend($content, $values, $filter);
         }
         ksort($content);
         $content = array_slice(array_reverse($content), 0, $config->getFeedRecords());
@@ -191,10 +206,11 @@ class Generator
 
     /**
      * @param string $contentTypeName
+     * @param array  $filter
      *
      * @return Content[]|false
      */
-    protected function getContent($contentTypeName)
+    protected function getContent($contentTypeName, array $filter = [])
     {
         $config = $this->config->getContentTypeFeed($contentTypeName);
         $repo = $this->em->getRepository($contentTypeName);
@@ -206,7 +222,36 @@ class Generator
             ->orderBy('datepublish', 'DESC')
         ;
 
+        if (! empty($filter)) {
+            $this->applyTaxonomyFilter($query, $contentTypeName, key($filter), reset($filter));
+        }
+
         return $repo->findWith($query);
+    }
+
+    /**
+     * Applies an additional taxonomy check to an existing QueryBuilder instance.
+     *
+     * @param QueryBuilder $query
+     * @param string       $contentTypeName
+     * @param string       $taxonomyName
+     * @param string       $taxonomyValue
+     */
+    private function applyTaxonomyFilter(QueryBuilder $query, $contentTypeName, $taxonomyName, $taxonomyValue)
+    {
+        $table = $this->databasePrefix . 'taxonomy';
+
+        $query
+            ->join('content', $table, 't', '
+                t.contenttype = :contenttype AND
+                t.content_id = content.id
+            ')
+            ->andWhere('t.taxonomytype = :taxonomytype')
+            ->andWhere('t.slug = :slug')
+            ->setParameter('contenttype', $contentTypeName)
+            ->setParameter('taxonomytype', $taxonomyName)
+            ->setParameter('slug', $taxonomyValue)
+        ;
     }
 
     /**
@@ -215,9 +260,9 @@ class Generator
      *
      * @return array
      */
-    protected function contentArrayAppend(array $content, array $contentType)
+    protected function contentArrayAppend(array $content, array $contentType, array $filter = [])
     {
-        $newContent = $this->getContent($contentType['slug']);
+        $newContent = $this->getContent($contentType['slug'], $filter);
 
         if ($newContent === false) {
             return $content;
