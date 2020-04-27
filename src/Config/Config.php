@@ -14,6 +14,7 @@ class Config
 {
     /** @var ContentTypeFeed[] */
     protected $contentTypeFeed;
+
     /** @var SiteWideFeed */
     protected $siteWideFeed;
 

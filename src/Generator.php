@@ -20,21 +20,27 @@ class Generator
 {
     /** @var Config\Config */
     protected $config;
+
     /** @var array */
     protected $contentTypes;
+
     /** @var EntityManager */
     protected $em;
+
     /** @var Twig_Environment */
     protected $twig;
+
     /** @var UrlGeneratorInterface */
     protected $urlGenerator;
+
     /** @var string */
     protected $sitename;
+
     /** @var string */
     protected $payoff;
+
     /** @var string */
     protected $databasePrefix;
-
 
     /**
      * Constructor.
@@ -58,7 +64,6 @@ class Generator
         $this->sitename = $sitename;
         $this->payoff = $payoff;
         $this->databasePrefix = $databasePrefix;
-
     }
 
     /**
@@ -282,7 +287,7 @@ class Generator
     /**
      * Ensure that all links inside the content are full URIs, even if the original is something
      * like `<img src="/relative/path">`.
-     * 
+     *
      * @param string $content
      * @return string
      */
