@@ -24,6 +24,9 @@ feeds:
 # Autodiscovery allows Feed aggregators to find your feeds more easily.
 autodiscovery: true
 
+# Whether or not to ensure all relative links in content are made absolute (with scheme://hostname)
+absolute_links: false
+
 # Block structure
 # ---------------
 #

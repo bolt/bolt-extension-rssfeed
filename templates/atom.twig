@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<feed xmlns="http://www.w3.org/2005/Atom">
+<feed xmlns="http://www.w3.org/2005/Atom" xml:base="{{ url('homepage') }}">
     <title>{{ app.config.get('general/sitename') }}</title>
     <subtitle>{{ app.config.get('general/payoff') }}</subtitle>
     <link href="{{ url('homepage') }}"/>

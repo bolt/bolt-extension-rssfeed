@@ -36,6 +36,7 @@ class Config
         }
         $this->feeds = (array) $config['feeds'];
         $this->autodiscovery = (boolean) $config['autodiscovery'];
+        $this->absolute_links = (boolean) $config['absolute_links'];
     }
 
     /**
@@ -110,5 +111,13 @@ class Config
     public function getAutodiscovery()
     {
         return $this->autodiscovery;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getAbsoluteLinks()
+    {
+        return $this->absolute_links;
     }
 }

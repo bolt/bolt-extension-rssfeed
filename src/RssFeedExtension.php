@@ -91,6 +91,7 @@ class RssFeedExtension extends SimpleExtension
                 'atom' => true
             ],
             'autodiscovery' => true,
+            'absolute_links' => true,
             'sitewide' => [
                 'enabled'        => true,
                 'feed_records'   => 10,

@@ -288,6 +288,10 @@ class Generator
      */
     protected function absolutizeLinks($content)
     {
+        if (! $this->config->getAbsoluteLinks()) {
+            return $content;
+        }
+
         $home = $this->urlGenerator->generate('homepage', [], UrlGeneratorInterface::ABSOLUTE_URL);
         $content = preg_replace('/ (href|src)="\/(?!\/)/', " $1=\"$home", $content);
 
