@@ -34,7 +34,7 @@ class ParseContent {
         $maid = new Maid(
             [
                 'output-format'   => 'html',
-                'allowed-tags'    => ['a', 'b', 'br', 'div', 'hr', 'h1', 'h2', 'h3', 'h4', 'p', 'strong', 'em', 'i', 'u', 'strike', 'ul', 'ol', 'li', 'img', 'blockquote', 'cite'],
+                'allowed-tags'    => ['a', 'b', 'br', 'div', 'hr', 'h1', 'h2', 'h3', 'h4', 'p', 'strong', 'em', 'i', 'u', 'strike', 'ul', 'ol', 'li', 'img'],
                 'allowed-attribs' => ['id', 'class', 'name', 'value', 'href', 'src'],
             ]
         );
