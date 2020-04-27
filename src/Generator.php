@@ -73,6 +73,7 @@ class Generator
         /** @var Config\ContentTypeFeed|Config\SiteWideFeed $feedConfig */
         $feedConfig = $context['config'];
         $feed = $this->twig->render($feedConfig->getAtomTemplate(), $context);
+        $feed = $this->absolutizeLinks($feed);
 
         return new \Twig_Markup($feed, 'UTF-8');
     }
@@ -89,6 +90,7 @@ class Generator
         /** @var Config\ContentTypeFeed|Config\SiteWideFeed $feedConfig */
         $feedConfig = $context['config'];
         $feed = $this->twig->render($feedConfig->getFeedTemplate(), $context);
+        $feed = $this->absolutizeLinks($feed);
 
         return new \Twig_Markup($feed, 'UTF-8');
     }
@@ -115,6 +117,7 @@ class Generator
                 UrlGeneratorInterface::ABSOLUTE_URL
             );
             $content = (string) $parseContent->rssSafe($record, 'teaser, introduction, body, text, content', 0, false);
+            $content = $this->absolutizeLinks($content);
             $user = $this->em->getRepository(Users::class)->find($record->getOwnerid());
             $feedItems[] = [
                 'id' => $id,
@@ -272,6 +275,21 @@ class Generator
             $key = $new->getDatepublish()->getTimestamp() . '.' . $new->getId() . '.' . $new->getSlug();
             $content[$key] = $new;
         }
+
+        return $content;
+    }
+
+    /**
+     * Ensure that all links inside the content are full URIs, even if the original is something
+     * like `<img src="/relative/path">`.
+     * 
+     * @param string $content
+     * @return string
+     */
+    protected function absolutizeLinks($content)
+    {
+        $home = $this->urlGenerator->generate('homepage', [], UrlGeneratorInterface::ABSOLUTE_URL);
+        $content = preg_replace('/ (href|src)="\/(?!\/)/', " $1=\"$home", $content);
 
         return $content;
     }
