@@ -272,11 +272,14 @@ class Generator
     {
         $newContent = $this->getContent($contentType['slug'], $filter);
 
-        if ($newContent === false) {
+        if ($newContent == false) {
             return $content;
         }
 
         foreach ($newContent as $new) {
+            if (! $new instanceof Content) {
+                continue;
+            }
             $key = $new->getDatepublish()->getTimestamp() . '.' . $new->getId() . '.' . $new->getSlug();
             $content[$key] = $new;
         }
