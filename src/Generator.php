@@ -280,7 +280,13 @@ class Generator
             if (! $new instanceof Content) {
                 continue;
             }
-            $key = $new->getDatepublish()->getTimestamp() . '.' . $new->getId() . '.' . $new->getSlug();
+
+            // Use publication date if set otherwise use creation date of the content
+            if($new->getDatepublish()){
+                $key = $new->getDatepublish()->getTimestamp() . '.' . $new->getId() . '.' . $new->getSlug();
+            }elseif($new->getDatecreated()){
+                $key = $new->getDatecreated()->getTimestamp() . '.' . $new->getId() . '.' . $new->getSlug();
+            }
             $content[$key] = $new;
         }
 
